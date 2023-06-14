@@ -1,0 +1,26 @@
+version: "2"
+services:
+  ibm-mq:
+    image: icr.io/ibm-messaging/mq:9.3.0.5-r2
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - MQ_QMGR_NAME=MQ1
+      - LICENSE=accept
+  kafka:
+    image: docker.io/bitnami/kafka:3.4
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+  kafkaui:
+    image: provectuslabs/kafka-ui:master
+    ports:
+      - "8080:8080"
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'

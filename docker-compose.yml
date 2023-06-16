@@ -6,8 +6,10 @@ services:
       - "1414:1414"
       - "9443:9443"
     environment:
-      - MQ_QMGR_NAME=MQ1
+      - MQ_QMGR_NAME=QM1
       - LICENSE=accept
+    volumes:
+      - mqdata:/mnt/mqm
   kafka:
     image: docker.io/bitnami/kafka:3.4
     ports:
@@ -24,3 +26,11 @@ services:
       - "8080:8080"
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - kafkadata:/bitnami/kafka
+
+volumes:
+  kafkadata:
+    driver: local
+  mqdata:
+    driver:local

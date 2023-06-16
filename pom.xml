@@ -21,6 +21,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!--	IBM MQ ConnectionFactory	-->
 		<dependency>
 			<groupId>com.ibm.mq</groupId>
 			<artifactId>mq-jms-spring-boot-starter</artifactId>
@@ -35,12 +37,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.camel.springboot</groupId>
-			<artifactId>camel-rest-starter</artifactId>
-			<version>4.0.0-M2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel.springboot</groupId>
-			<artifactId>camel-netty-http-starter</artifactId>
+			<artifactId>camel-http-starter</artifactId>
 			<version>4.0.0-M2</version>
 		</dependency>
 		<dependency>

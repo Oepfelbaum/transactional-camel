@@ -6,11 +6,25 @@ import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.kafka.consumer.KafkaManualCommit;
 import org.apache.camel.http.base.HttpOperationFailedException;
 import org.apache.camel.http.common.HttpMethods;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaRouter extends RouteBuilder {
+
+    @Value("${kafka.brokers}")
+    private String kafkaBrokers;
+    @Value("${kafka.topic}")
+    private String kafkaTopic;
+    @Value("${kafka.groupId}")
+    private String kafkaGroupId;
+
+    @Value("${jms.sinkQueue}")
+    private String jmsSinkQueue;
+
+    @Value("${rest.sinkAddress}")
+    private String restSinkAddress;
 
     @Override
     public void configure() throws Exception {
@@ -30,9 +44,9 @@ public class KafkaRouter extends RouteBuilder {
                 .to("log:4xx?level=ERROR");
 
         // Kafka Consumer
-        from("kafka:camel?" +
-                "brokers=localhost:9094&" +
-                "groupId=camelGroup" +
+        from("kafka:" + kafkaTopic +
+                "?brokers=" + kafkaBrokers +
+                "&groupId=" + kafkaGroupId +
                 "&maxPollRecords=3" +
                 "&consumersCount=1" +
                 "&autoOffsetReset=earliest" +
@@ -45,12 +59,12 @@ public class KafkaRouter extends RouteBuilder {
             .choice()
                 .when(body().contains("MQ"))
                     .log("Sending message to MQ")
-                    .to("jms:queue:sink")
+                    .to("jms:queue:" + jmsSinkQueue)
                 .when(body().contains("REST"))
                     .log("Sending message to REST API")
                     .setHeader(Exchange.HTTP_METHOD, constant(HttpMethods.POST))
                     .setHeader("Content-Type", constant("text/plain"))
-                    .to("http://localhost:3000/api/messageSink")
+                    .to(restSinkAddress)
             .end()
 
             // Commit Kafka Offset when Camel Exchange is completed

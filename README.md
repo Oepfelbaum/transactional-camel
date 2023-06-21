@@ -34,6 +34,8 @@ Configured in the subfolder */node-rest-server/*.
 
 ## Run with Docker Containers
 
+*Note: the Docker image for IBM MQ only works on x86_64 and s390x machines*
+
 The simplest way to run this demo is with *docker-compose*. With Docker installed, run the command
 
 ~~~
@@ -42,4 +44,4 @@ docker compose up -d
 
 And then add new messages via the web clients of
 - IBM MQ: https://localhost:9443/ibmmq/console/ (User: "admin" / pw: "passw0rd")
-- Apache Kafka: http://localhost:8080 (bootstrap server: "kafka:9094")
+- Apache Kafka: http://localhost:8080 (bootstrap server: "kafka:9092")

@@ -47,12 +47,10 @@ public class KafkaRouter extends RouteBuilder {
         from("kafka:" + kafkaTopic +
                 "?brokers=" + kafkaBrokers +
                 "&groupId=" + kafkaGroupId +
-                "&maxPollRecords=3" +
-                "&consumersCount=1" +
+                "&maxPollRecords=1" +
                 "&autoOffsetReset=earliest" +
                 "&autoCommitEnable=false" +
-                "&allowManualCommit=true" +
-                "&breakOnFirstError=true")
+                "&allowManualCommit=true")
             .log("Consuming message from Kafka")
             // Copy Header to a Property, because the Header will be filtered
             .setProperty(KafkaConstants.MANUAL_COMMIT, header(KafkaConstants.MANUAL_COMMIT))
@@ -70,14 +68,11 @@ public class KafkaRouter extends RouteBuilder {
             // Commit Kafka Offset when Camel Exchange is completed
             .onCompletion().onCompleteOnly()
                 .process(exchange -> {
-                    Boolean lastOne = exchange.getIn().getHeader(KafkaConstants.LAST_RECORD_BEFORE_COMMIT, Boolean.class);
 
-                    if (lastOne) {
-                        KafkaManualCommit manual = exchange.getProperty(KafkaConstants.MANUAL_COMMIT, KafkaManualCommit.class);
-                        if (manual != null) {
-                            manual.commit();
-                            System.out.println("Kafka offset committed");
-                        }
+                    KafkaManualCommit manual = exchange.getProperty(KafkaConstants.MANUAL_COMMIT, KafkaManualCommit.class);
+                    if (manual != null) {
+                        manual.commit();
+                        System.out.println("Kafka offset committed");
                     }
                 })
             .end();

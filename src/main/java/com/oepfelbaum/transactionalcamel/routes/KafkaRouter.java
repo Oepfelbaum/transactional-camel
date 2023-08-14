@@ -48,7 +48,6 @@ public class KafkaRouter extends RouteBuilder {
                 "?brokers=" + kafkaBrokers +
                 "&groupId=" + kafkaGroupId +
                 "&maxPollRecords=1" +
-                "&autoOffsetReset=earliest" +
                 "&autoCommitEnable=false" +
                 "&allowManualCommit=true")
             .log("Consuming message from Kafka")

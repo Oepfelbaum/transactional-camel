@@ -1,6 +1,7 @@
 package com.oepfelbaum.transactionalcamel.routes;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.http.base.HttpOperationFailedException;
 import org.apache.camel.http.common.HttpMethods;
@@ -23,6 +24,7 @@ public class MQRouter extends RouteBuilder {
     public void configure() throws Exception {
         errorHandler(deadLetterChannel("log:dead?level=ERROR")
                 .maximumRedeliveries(3)
+                .retryAttemptedLogLevel(LoggingLevel.INFO)
         );
 
         // No Redelivery for 4xx errors
